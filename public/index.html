@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Checkout Page</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+        .checkout-button {
+            background-color: #6772e5;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .checkout-button:hover {
+            background-color: #5469d4;
+        }
+    </style>
+</head>
+<body>
+    <button class="checkout-button" id="checkout-button">Checkout</button>
+
+    <script>
+        var stripe = Stripe('YOUR_STRIPE_PUBLIC_KEY');
+        var checkoutButton = document.getElementById('checkout-button');
+
+        checkoutButton.addEventListener('click', function () {
+            fetch('/create-checkout-session', { method: 'POST' })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (sessionId) {
+                    return stripe.redirectToCheckout({ sessionId: sessionId });
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
